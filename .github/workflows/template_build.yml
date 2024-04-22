@@ -45,12 +45,7 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
-        run: mvn -B clean package --file pom.xml
- 
-      - name: Run tests
-        run: mvn test --file pom.xml
- 
+    
       - name: Set up Maven
         uses: actions/setup-java@v2
         with:
@@ -60,6 +55,12 @@ jobs:
       - name: Create project structure
         run: |
           mvn archetype:generate -DgroupId=${{ inputs.artifact_id }} -DartifactId=${{ inputs.project_name }} -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+      
+      - name: Build with Maven
+        run: mvn -B clean package --file pom.xml
+ 
+      - name: Run tests
+        run: mvn test --file pom.xml
  
       - name: Commit project structure
         run: |
