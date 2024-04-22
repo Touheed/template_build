@@ -1,70 +1,43 @@
-name: Create and Commit Maven Project
+name: Create Maven Project
  
 on:
   workflow_dispatch:
     inputs:
-      project_name:
+      groupId:
+        description: 'Maven Group ID'
+        required: true
+      artifactId:
+        description: 'Maven Artifact ID'
+        required: true
+      projectName:
         description: 'Project Name'
         required: true
-        default: 'my-maven-project'
-      artifact_id:
-        description: 'Artifact ID'
-        required: true
-        default: 'com.example'
  
 jobs:
-  create_and_commit:
+  create_project:
     runs-on: ubuntu-latest
- 
     steps:
+      - name: Prompt for user input
+        id: input
+        run: |
+          echo "::set-output name=groupId::${{ github.event.inputs.groupId }}"
+          echo "::set-output name=artifactId::${{ github.event.inputs.artifactId }}"
+          echo "::set-output name=projectName::${{ github.event.inputs.projectName }}"
+ 
       - name: Checkout code
         uses: actions/checkout@v2
-          
-      - name: Cache Maven packages
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
- 
-         
-      - name: Check if Maven structure exists
-        run: |
-          if [ ! -d "src/main/java" ] || [ ! -d "src/main/resources" ] || [ ! -d "src/test/java" ] || [ ! -d "src/test/resources" ]; then
-            echo "Maven structure not found. Creating..."
-            mkdir -p src/main/java src/main/resources src/test/java src/test/resources
-          else
-            echo "Maven structure already exists."
-          fi
- 
  
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: maven
-      - name: Build with Maven
-        run: mvn -B clean package --file pom.xml
+          java-version: '11' # Specify the Java version you want to use
  
-      - name: Run tests
-        run: mvn test --file pom.xml
- 
-      - name: Set up Maven
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          maven-version: '3.6.3'
- 
-      - name: Create project structure
-        run: |
-          mvn archetype:generate -DgroupId=${{ inputs.artifact_id }} -DartifactId=${{ inputs.project_name }} -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
- 
-      - name: Commit project structure
-        run: |
-          git add .
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -m "Initial project structure"
-          git push origin main
+      - name: Create Maven project
+        run: mvn archetype:generate \
+             -DgroupId="${{ steps.input.outputs.groupId }}" \
+             -DartifactId="${{ steps.input.outputs.artifactId }}" \
+             -DarchetypeArtifactId=maven-archetype-quickstart \
+             -DinteractiveMode=false \
+             -DarchetypeVersion=1.4 \
+             -Dversion=1.0-SNAPSHOT \
+             -Dpackage="${{ steps.input.outputs.groupId }}.${{ steps.input.outputs.artifactId }}"
