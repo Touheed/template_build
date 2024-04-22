@@ -1,0 +1,40 @@
+name: Create and Commit Project Structure
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  create_and_commit:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+ 
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+ 
+      - name: Set up Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          maven-version: '3.6.3'
+ 
+      - name: Create project structure
+        run: |
+          mvn archetype:generate -DgroupId=com.example -DartifactId=myproject -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+          # OR
+          # kotlin -version
+          # kotlin -d myproject
+ 
+      - name: Commit project structure
+        run: |
+          git add .
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Initial project structure"
+          git push origin main
