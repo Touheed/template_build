@@ -1,9 +1,16 @@
-name: Create and Commit Project Structure
+name: Create and Commit Maven Project
  
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      project_name:
+        description: 'Project Name'
+        required: true
+        default: 'my-maven-project'
+      artifact_id:
+        description: 'Artifact ID'
+        required: true
+        default: 'com.example'
  
 jobs:
   create_and_commit:
@@ -26,15 +33,12 @@ jobs:
  
       - name: Create project structure
         run: |
-          mvn archetype:generate -DgroupId=com.example -DartifactId=myproject -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
-          # OR
-          # kotlin -version
-          # kotlin -d myproject
+          mvn archetype:generate -DgroupId=$INPUT_ARTIFACT_ID -DartifactId=$INPUT_PROJECT_NAME -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
  
       - name: Commit project structure
         run: |
           git add .
-          git config --local user.email "touheedkhan.7f@github.com"
+          git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Initial project structure"
           git push origin main
