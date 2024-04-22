@@ -19,6 +19,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+         
+      - name: Check if Maven structure exists
+        run: |
+          if [ ! -d "src/main/java" ] || [ ! -d "src/main/resources" ] || [ ! -d "src/test/java" ] || [ ! -d "src/test/resources" ]; then
+            echo "Maven structure not found. Creating..."
+            mkdir -p src/main/java src/main/resources src/test/java src/test/resources
+          else
+            echo "Maven structure already exists."
+          fi
+ 
  
       - name: Set up JDK
         uses: actions/setup-java@v2
