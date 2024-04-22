@@ -33,7 +33,7 @@ jobs:
  
       - name: Create project structure
         run: |
-          mvn archetype:generate -DgroupId=$INPUT_ARTIFACT_ID -DartifactId=$INPUT_PROJECT_NAME -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+          mvn archetype:generate -DgroupId=${{ inputs.artifact_id }} -DartifactId=${{ inputs.project_name }} -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
  
       - name: Commit project structure
         run: |
