@@ -34,7 +34,7 @@ jobs:
       - name: Commit project structure
         run: |
           git add .
-          git config --local user.email "action@github.com"
+          git config --local user.email "touheedkhan.7f@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Initial project structure"
           git push origin main
