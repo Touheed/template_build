@@ -31,6 +31,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '11' # Specify the Java version you want to use
+          distribution: 'adopt'
  
       - name: Create Maven project
         run: mvn archetype:generate \
